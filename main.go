@@ -63,6 +63,14 @@ func proxyHandle(proxy *httputil.ReverseProxy) http.HandlerFunc {
 }
 
 func mustParseURL(host, port string) *url.URL {
+	if host == "" {
+		log.Fatal("Host is missing")
+	}
+
+	if port == "" {
+		log.Fatal("Port is missing")
+	}
+
 	rawURL := fmt.Sprintf("http://%s:%s", strings.TrimSpace(host), strings.TrimSpace(port))
 	parsed, err := url.Parse(rawURL)
 	if err != nil {
