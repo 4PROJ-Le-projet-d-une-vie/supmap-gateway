@@ -6,6 +6,7 @@ import (
 )
 
 type Config struct {
+	Port           string `env:"SUPMAP_GATEWAY_PORT"`
 	UsersHost      string `env:"SUPMAP_USERS_HOST"`
 	UsersPort      string `env:"SUPMAP_USERS_PORT"`
 	IncidentsHost  string `env:"SUPMAP_INCIDENTS_HOST"`

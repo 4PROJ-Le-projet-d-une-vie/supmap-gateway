@@ -15,15 +15,36 @@ func main() {
 		log.Fatal("failed to load config", err)
 	}
 
-	//usersProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.UsersHost, config.UsersHost))
-	//incidentsProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.IncidentsHost, config.IncidentsPort))
-	//gisProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.GisHost, config.GisPort))
 	navigationProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.NavigationHost, config.NavigationPort))
-
 	http.HandleFunc("/navigation/ws", proxyRedirect(navigationProxy, "/ws"))
 
-	log.Println("Gateway running on :8080")
-	log.Fatal(http.ListenAndServe(":8090", nil))
+	usersProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.UsersHost, config.UsersPort))
+	http.HandleFunc("/users", proxyHandle(usersProxy))
+	http.HandleFunc("/users/", proxyHandle(usersProxy))
+	http.HandleFunc("/login", proxyHandle(usersProxy))
+	http.HandleFunc("/logout", proxyHandle(usersProxy))
+	http.HandleFunc("/refresh", proxyHandle(usersProxy))
+	http.HandleFunc("/register", proxyHandle(usersProxy))
+
+	incidentsProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.IncidentsHost, config.IncidentsPort))
+	http.HandleFunc("/incidents", proxyHandle(incidentsProxy))
+	http.HandleFunc("/incidents/", proxyHandle(incidentsProxy)) // pour /types/{id} etc.
+	http.HandleFunc("/incidents/interactions", proxyHandle(incidentsProxy))
+	http.HandleFunc("/incidents/me/history", proxyHandle(incidentsProxy))
+	http.HandleFunc("/incidents/types", proxyHandle(incidentsProxy))
+	http.HandleFunc("/incidents/types/", proxyHandle(incidentsProxy))
+
+	gisProxy := httputil.NewSingleHostReverseProxy(mustParseURL(config.GisHost, config.GisPort))
+	http.HandleFunc("/address", proxyHandle(gisProxy))
+	http.HandleFunc("/geocode", proxyHandle(gisProxy))
+	http.HandleFunc("/route", proxyHandle(gisProxy))
+
+	if config.Port == "" {
+		log.Fatal("No gateway port provided")
+	}
+
+	log.Printf("Gateway running on :%s\n", config.Port)
+	log.Fatal(http.ListenAndServe(":"+config.Port, nil))
 }
 
 // proxyRedirect prend un proxy et une route de réécriture optionnelle
