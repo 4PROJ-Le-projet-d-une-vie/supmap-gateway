@@ -12,7 +12,7 @@ type Config struct {
 	IncidentsHost  string `env:"SUPMAP_INCIDENTS_HOST"`
 	IncidentsPort  string `env:"SUPMAP_INCIDENTS_PORT"`
 	GisHost        string `env:"SUPMAP_GIS_HOST"`
-	GisPort        string `env:"SUPMAP_GIST_PORT"`
+	GisPort        string `env:"SUPMAP_GIS_PORT"`
 	NavigationHost string `env:"SUPMAP_NAVIGATION_HOST"`
 	NavigationPort string `env:"SUPMAP_NAVIGATION_PORT"`
 }
