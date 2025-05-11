@@ -70,7 +70,7 @@ La configuration se fait via des variables d'environnement :
 | SUPMAP_NAVIGATION_HOST | Hôte du service navigation   |
 | SUPMAP_NAVIGATION_PORT | Port du service navigation   |
 
-🔌 Points d'accès (Endpoints)
+Points d'accès (Endpoints)
 - Service Utilisateurs
   - /login - Authentification
   - /logout - Déconnexion
