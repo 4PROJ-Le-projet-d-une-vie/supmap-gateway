@@ -59,7 +59,7 @@ func main() {
 	}
 
 	log.Printf("Gateway running on :%s\n", config.Port)
-	log.Fatal(http.ListenAndServe(":"+config.Port, WithCORS(http.DefaultServeMux)))
+	log.Fatal(http.ListenAndServeTLS(":"+config.Port, config.CertFile, config.KeyFile, WithCORS(http.DefaultServeMux)))
 }
 
 // proxyRedirect prend un proxy et une route de réécriture optionnelle
