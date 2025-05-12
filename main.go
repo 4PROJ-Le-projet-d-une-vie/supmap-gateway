@@ -9,6 +9,21 @@ import (
 	"strings"
 )
 
+func WithCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		if r.Method == http.MethodOptions { // Ignore preflight requests because OPTIONS handler is not implemented
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	config, err := NewConfig()
 	if err != nil {
@@ -44,7 +59,7 @@ func main() {
 	}
 
 	log.Printf("Gateway running on :%s\n", config.Port)
-	log.Fatal(http.ListenAndServe(":"+config.Port, nil))
+	log.Fatal(http.ListenAndServe(":"+config.Port, WithCORS(http.DefaultServeMux)))
 }
 
 // proxyRedirect prend un proxy et une route de réécriture optionnelle
